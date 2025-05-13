@@ -1,0 +1,41 @@
+#include <iostream>
+#include <vector>
+#include <climits>
+
+int main() {
+    int amount = 15;
+    std::vector<int> coins = {1, 2, 3, 4, 5, 6};
+    std::vector<int> dp(amount + 1, INT_MAX);
+    std::vector<int> used(amount + 1, -1); // Hangi para kullanılmış?
+
+    dp[0] = 0;
+
+    for (int i = 1; i <= amount; ++i) {
+        for (int coin : coins) {
+            if (i - coin >= 0 && dp[i - coin] != INT_MAX) {
+                if (dp[i] > dp[i - coin] + 1) {
+                    dp[i] = dp[i - coin] + 1;
+                    used[i] = coin;
+                }
+            }
+        }
+    }
+
+    if (dp[amount] == INT_MAX) {
+        std::cout << "15 TL bu paralarla verilemez.\n";
+        return 0;
+    }
+
+    std::cout << "Minimum bozuk para sayısı: " << dp[amount] << "\n";
+    std::cout << "Kullanılan paralar: ";
+
+    // Kullanılan bozuk paraları geri takip et
+    int remaining = amount;
+    while (remaining > 0) {
+        std::cout << used[remaining] << " ";
+        remaining -= used[remaining];
+    }
+    std::cout << "\n";
+
+    return 0;
+}
